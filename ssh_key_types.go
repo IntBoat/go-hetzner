@@ -9,11 +9,15 @@ type SSHKey struct {
 }
 
 type SSHKeyCreateRequest struct {
-	Name string `url:"name"`
-	Data string `url:"data"`
+	Name string `url:"name"` // SSH key name
+	Data string `url:"data"` // SSH key data in OpenSSH or SSH2 format
 }
 
 type SSHKeyUpdateRequest struct {
-	Fingerprint string
-	Name        string `url:"name"`
+	Fingerprint string // Key fingerprint
+	Name        string `url:"name"` // SSH key name
+}
+
+type dataKey struct {
+	Key *SSHKey `json:"key"`
 }

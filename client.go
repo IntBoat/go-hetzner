@@ -15,25 +15,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cenkalti/backoff"
 	"github.com/google/go-querystring/query"
 )
 
 const (
-	// Version of this libary
-	Version = "0.1.0"
-
-	// User agent for this library
-	UserAgent = "appscode/" + Version
+	// UserAgent contains user agent identifier
+	UserAgent = "intboat/go-hetzner"
 
 	// DefaultEndpoint to be used
 	DefaultEndpoint = "https://robot-ws.your-server.de"
-
-	mediaType = "application/json"
 )
 
 type Client struct {
-	// HTTP client used to communicate with Hertzner API.
+	// HTTP client used to communicate with Hetzner API.
 	client *http.Client
 
 	// Base URL for API requests.
@@ -47,42 +41,42 @@ type Client struct {
 
 	headers map[string]string
 
-	b backoff.BackOff
-
 	Boot     BootService
 	Ordering OrderingService
 	Reset    ResetService
 	Server   ServerService
 	SSHKey   SSHKeyService
-	VServer  VServerService
+	Failover FailoverService
+	IP       IpService
+	Subnet   SubnetService
+	Wol      WOLService
+	Traffic  TrafficService
 }
 
 func NewClient(username, password string) *Client {
 	c := &Client{}
-	c.client = &http.Client{Timeout: time.Second * 10}
+	c.client = &http.Client{Timeout: time.Second * 120}
 	c.BaseURL = DefaultEndpoint
 	c.headers = map[string]string{
 		"Authorization": "Basic " + base64.StdEncoding.EncodeToString([]byte(username+":"+password)),
 	}
 	c.UserAgent = UserAgent
-	c.b = NewExponentialBackOff()
 
 	c.Boot = &BootServiceImpl{client: c}
 	c.Ordering = &OrderingServiceImpl{client: c}
 	c.Reset = &ResetServiceImpl{client: c}
 	c.Server = &ServerServiceImpl{client: c}
 	c.SSHKey = &SSHKeyServiceImpl{client: c}
-	c.VServer = &VServerServiceImpl{client: c}
+	c.Failover = &FailoverServiceImpl{client: c}
+	c.IP = &IpServiceImpl{client: c}
+	c.Subnet = &SubnetServiceImpl{client: c}
+	c.Wol = &WOLServiceImpl{client: c}
+	c.Traffic = &TrafficServiceImpl{client: c}
 	return c
 }
 
 func (c *Client) WithUserAgent(ua string) *Client {
 	c.UserAgent = ua
-	return c
-}
-
-func (c *Client) WithBackOff(b backoff.BackOff) *Client {
-	c.b = b
 	return c
 }
 
@@ -154,7 +148,7 @@ func (c *Client) NewRequest(method, path string, request interface{}) (*http.Req
 	return req, nil
 }
 
-// Do sends an API request and returns the API response. The API response is JSON decoded and stored in the value
+// Do send an API request and returns the API response. The API response is JSON decoded and stored in the value
 // pointed to by v, or returned as an error if an API error has occurred.
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	var resp *http.Response
@@ -164,18 +158,14 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		fmt.Println(req.URL.String())
 	}
 
-	err = backoff.Retry(func() error {
-		resp, err = c.client.Do(req)
-		if err != nil {
-			return err
-		}
-		if c := resp.StatusCode; c == 500 || c >= 502 && c <= 599 {
-			// Avoid retry on 501: Not Implemented
-			err = &status5xx{}
-		}
-		return err
-	}, c.b)
-	c.b.Reset()
+	resp, err = c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if c := resp.StatusCode; c == 500 || c >= 502 && c <= 599 {
+		// Avoid retry on 501: Not Implemented
+		err = &status5xx{}
+	}
 
 	if err != nil {
 		if _, ok := err.(*status5xx); !ok {
@@ -209,7 +199,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		//if err != nil {
 		//	return nil, err
 		//}
-
 		err = json.NewDecoder(resp.Body).Decode(v)
 		if err != nil {
 			return nil, err
@@ -248,13 +237,10 @@ func checkResponse(r *http.Response) error {
 	return apiErr
 }
 
-func (c *Client) Call(method, path string, reqBody, resType interface{}, needAuth bool) (*http.Response, error) {
+func (c *Client) Call(method, path string, reqBody, resType interface{}) (*http.Response, error) {
 	req, err := c.NewRequest(method, path, reqBody)
 	if err != nil {
 		return nil, err
-	}
-	if !needAuth {
-		req.Header.Del("Authorization")
 	}
 	return c.Do(req, resType)
 }

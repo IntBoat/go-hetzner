@@ -1,12 +1,11 @@
 package hetzner
 
-import . "github.com/appscode/go/encoding/json/types"
-
 type Rescue struct {
-	ServerIP      string           `json:"server_ip"`
+	ServerIp      string           `json:"server_ip"`
+	ServerIpv6Net string           `json:"server_ipv6_net"`
 	ServerNumber  int              `json:"server_number"`
-	Os            ArrayOrString    `json:"os"`
-	Arch          ArrayOrInt       `json:"arch"`
+	Os            []string         `json:"os"`
+	Arch          []int            `json:"arch"`
 	Active        bool             `json:"active"`
 	Password      *string          `json:"password"`
 	AuthorizedKey []*AuthorizedKey `json:"authorized_key"`
@@ -14,11 +13,12 @@ type Rescue struct {
 }
 
 type Linux struct {
-	ServerIP      string           `json:"server_ip"`
+	ServerIp      string           `json:"server_ip"`
+	ServerIpv6Net string           `json:"server_ipv6_net"`
 	ServerNumber  int              `json:"server_number"`
-	Dist          ArrayOrString    `json:"dist"`
-	Arch          ArrayOrInt       `json:"arch"`
-	Lang          ArrayOrString    `json:"lang"`
+	Dist          []string         `json:"dist"`
+	Arch          []int            `json:"arch"`
+	Lang          []string         `json:"lang"`
 	Active        bool             `json:"active"`
 	Password      *string          `json:"password"`
 	AuthorizedKey []*AuthorizedKey `json:"authorized_key"`
@@ -26,44 +26,48 @@ type Linux struct {
 }
 
 type Vnc struct {
-	ServerIP     string        `json:"server_ip"`
-	ServerNumber int           `json:"server_number"`
-	Dist         ArrayOrString `json:"dist"`
-	Arch         ArrayOrInt    `json:"arch"`
-	Lang         ArrayOrString `json:"lang"`
-	Active       bool          `json:"active"`
-	Password     *string       `json:"password"`
+	ServerIp      string   `json:"server_ip"`
+	ServerIpv6Net string   `json:"server_ipv6_net"`
+	ServerNumber  int      `json:"server_number"`
+	Dist          []string `json:"dist"`
+	Arch          []int    `json:"arch"`
+	Lang          []string `json:"lang"`
+	Active        bool     `json:"active"`
+	Password      *string  `json:"password"`
 }
 
 type Windows struct {
-	ServerIP     string        `json:"server_ip"`
-	ServerNumber int           `json:"server_number"`
-	Dist         ArrayOrString `json:"dist"`
-	Lang         ArrayOrString `json:"lang"`
-	Active       bool          `json:"active"`
-	Password     *string       `json:"password"`
+	ServerIp      string   `json:"server_ip"`
+	ServerIpv6Net string   `json:"server_ipv6_net"`
+	ServerNumber  int      `json:"server_number"`
+	Dist          []string `json:"dist"`
+	Lang          []string `json:"lang"`
+	Active        bool     `json:"active"`
+	Password      *string  `json:"password"`
 }
 
 type Plesk struct {
-	ServerIP     string        `json:"server_ip"`
-	ServerNumber int           `json:"server_number"`
-	Dist         ArrayOrString `json:"dist"`
-	Arch         ArrayOrInt    `json:"arch"`
-	Lang         ArrayOrString `json:"lang"`
-	Active       bool          `json:"active"`
-	Password     *string       `json:"password"`
-	Hostname     *string       `json:"hostname"`
+	ServerIp      string   `json:"server_ip"`
+	ServerIpv6Net string   `json:"server_ipv6_net"`
+	ServerNumber  int      `json:"server_number"`
+	Dist          []string `json:"dist"`
+	Arch          []int    `json:"arch"`
+	Lang          []string `json:"lang"`
+	Active        bool     `json:"active"`
+	Password      *string  `json:"password"`
+	Hostname      *string  `json:"hostname"`
 }
 
 type Cpanel struct {
-	ServerIP     string        `json:"server_ip"`
-	ServerNumber int           `json:"server_number"`
-	Dist         ArrayOrString `json:"dist"`
-	Arch         ArrayOrInt    `json:"arch"`
-	Lang         ArrayOrString `json:"lang"`
-	Active       bool          `json:"active"`
-	Password     *string       `json:"password"`
-	Hostname     *string       `json:"hostname"`
+	ServerIp      string   `json:"server_ip"`
+	ServerIpv6Net string   `json:"server_ipv6_net"`
+	ServerNumber  int      `json:"server_number"`
+	Dist          []string `json:"dist"`
+	Arch          []int    `json:"arch"`
+	Lang          []string `json:"lang"`
+	Active        bool     `json:"active"`
+	Password      *string  `json:"password"`
+	Hostname      *string  `json:"hostname"`
 }
 
 type Boot struct {
@@ -75,10 +79,65 @@ type Boot struct {
 	Cpanel  *Cpanel  `json:"cpanel"`
 }
 
+type ActiveMeta struct {
+	ServerNumber string // Server ID
+	Dist         string `url:"dist"` // Distribution
+	Arch         int    `url:"arch"` // Architecture (optional, default: 64)
+	Lang         string `url:"lang"` // Language
+}
+
 type ActivateLinuxRequest struct {
-	ServerIP      string
-	Dist          string   `url:"dist"`
-	Arch          int      `url:"arch"`
-	Lang          string   `url:"lang"`
-	AuthorizedKey []string `url:"authorized_key,brackets"`
+	ActiveMeta
+	AuthorizedKey *[]string `url:"authorized_key,brackets"` // One or more SSH key fingerprints (optional)
+}
+
+type ActivateRescueRequest struct {
+	ActiveMeta
+	AuthorizedKey *[]string `url:"authorized_key,brackets"` // One or more SSH key fingerprints (optional)
+}
+
+type ActivateVncRequest struct {
+	ActiveMeta
+}
+
+type ActivateWindowsRequest struct {
+	ActiveMeta
+}
+
+type ActivatePleskRequest struct {
+	ActiveMeta
+	Hostname *string `url:"hostname"` // Hostname
+}
+
+type ActivateCPanelRequest struct {
+	ActiveMeta
+	hostname *string `url:"hostname"` // Hostname
+}
+
+type dataLinux struct {
+	Linux *Linux `json:"linux"`
+}
+
+type dataVnc struct {
+	Vnc *Vnc `json:"vnc"`
+}
+
+type dataWindows struct {
+	Windows *Windows `json:"windows"`
+}
+
+type dataPlesk struct {
+	Plesk *Plesk `json:"plesk"`
+}
+
+type dataCpanel struct {
+	Cpanel *Cpanel `json:"cpanel"`
+}
+
+type dataBoot struct {
+	Boot *Boot `json:"boot"`
+}
+
+type dataRescue struct {
+	Rescue *Rescue `json:"rescue"`
 }

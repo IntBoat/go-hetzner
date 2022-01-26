@@ -5,11 +5,13 @@ import (
 	"net/http"
 )
 
-// See: https://wiki.hetzner.de/index.php/Robot_Webservice/en#Reset
+// Api: https://robot.your-server.de/doc/webservice/en.html#reset
+
+// ResetService represents a service to work with Reset ordering.
 type ResetService interface {
 	List() ([]*Reset, *http.Response, error)
 	Get(serverIP string) (*Reset, *http.Response, error)
-	Create(req *ResetCreateRequest) (*Reset, *http.Response, error)
+	Reset(req *ResetCreateRequest) (*Reset, *http.Response, error)
 }
 
 type ResetServiceImpl struct {
@@ -18,14 +20,13 @@ type ResetServiceImpl struct {
 
 var _ ResetService = &ResetServiceImpl{}
 
+// List Query reset options for all servers
+// See: https://robot.your-server.de/doc/webservice/en.html#get-reset
 func (s *ResetServiceImpl) List() ([]*Reset, *http.Response, error) {
 	path := "/reset"
 
-	type Data struct {
-		Reset *Reset `json:"reset"`
-	}
-	data := make([]Data, 0)
-	resp, err := s.client.Call(http.MethodGet, path, nil, &data, true)
+	data := make([]dataReset, 0)
+	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 
 	a := make([]*Reset, len(data))
 	for i, d := range data {
@@ -34,26 +35,23 @@ func (s *ResetServiceImpl) List() ([]*Reset, *http.Response, error) {
 	return a, resp, err
 }
 
-func (s *ResetServiceImpl) Get(serverIP string) (*Reset, *http.Response, error) {
-	path := fmt.Sprintf("/reset/%v", serverIP)
+// Get Query reset options for a specific server
+// See: https://robot.your-server.de/doc/webservice/en.html#get-reset-server-number
+func (s *ResetServiceImpl) Get(serverNumber string) (*Reset, *http.Response, error) {
+	path := fmt.Sprintf("/reset/%s", serverNumber)
 
-	type Data struct {
-		Reset *Reset `json:"reset"`
-	}
-	data := Data{}
-	resp, err := s.client.Call(http.MethodGet, path, nil, &data, true)
+	data := dataReset{}
+	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Reset, resp, err
 }
 
-func (s *ResetServiceImpl) Create(req *ResetCreateRequest) (*Reset, *http.Response, error) {
-	path := fmt.Sprintf("/reset/%v", req.ServerIP)
+// Reset Execute reset on specific server
+// See: https://robot.your-server.de/doc/webservice/en.html#post-reset-server-number
+func (s *ResetServiceImpl) Reset(req *ResetCreateRequest) (*Reset, *http.Response, error) {
+	path := fmt.Sprintf("/reset/%s", req.ServerNumber)
 
-	type Data struct {
-		Reset *ResetCreateResponse `json:"reset"`
-	}
-
-	data := Data{}
-	resp, err := s.client.Call(http.MethodPost, path, req, &data, true)
+	data := dataResetCreateResponse{}
+	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 
 	out := &Reset{
 		ServerIP:     data.Reset.ServerIP,

@@ -5,11 +5,13 @@ import (
 	"net/http"
 )
 
-// See: https://wiki.hetzner.de/index.php/Robot_Webservice/en#Server
+// Api: https://robot.your-server.de/doc/webservice/en.html#server
+
+// ServerService represents a service to work with server service.
 type ServerService interface {
-	ListServers() ([]*ServerSummary, *http.Response, error)
-	GetServer(serverIP string) (*Server, *http.Response, error)
-	UpdateServer(req *ServerUpdateRequest) (*Server, *http.Response, error)
+	List() ([]*ServerSummary, *http.Response, error)
+	Get(serverIP string) (*Server, *http.Response, error)
+	Update(req *UpdateServerRequest) (*Server, *http.Response, error)
 
 	GetCancellation(serverIP string) (*Cancellation, *http.Response, error)
 	CancelServer(req *CancelServerRequest) (*Cancellation, *http.Response, error)
@@ -22,14 +24,13 @@ type ServerServiceImpl struct {
 
 var _ ServerService = &ServerServiceImpl{}
 
-func (s *ServerServiceImpl) ListServers() ([]*ServerSummary, *http.Response, error) {
+// List Query data of all servers
+// See: https://robot.your-server.de/doc/webservice/en.html#get-server
+func (s *ServerServiceImpl) List() ([]*ServerSummary, *http.Response, error) {
 	path := "/server"
 
-	type Data struct {
-		Server *ServerSummary `json:"server"`
-	}
-	data := make([]Data, 0)
-	resp, err := s.client.Call(http.MethodGet, path, nil, &data, true)
+	data := make([]dataServerSummary, 0)
+	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 
 	a := make([]*ServerSummary, len(data))
 	for i, d := range data {
@@ -38,52 +39,60 @@ func (s *ServerServiceImpl) ListServers() ([]*ServerSummary, *http.Response, err
 	return a, resp, err
 }
 
-func (s *ServerServiceImpl) GetServer(serverIP string) (*Server, *http.Response, error) {
-	path := fmt.Sprintf("/server/%v", serverIP)
+// Get Query server data for a specific server
+// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number
+func (s *ServerServiceImpl) Get(ServerNumber string) (*Server, *http.Response, error) {
+	path := fmt.Sprintf("/server/%s", ServerNumber)
 
-	type Data struct {
-		Server *Server `json:"server"`
-	}
-	data := Data{}
-	resp, err := s.client.Call(http.MethodGet, path, nil, &data, true)
+	data := dataServer{}
+	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Server, resp, err
 }
 
-func (s *ServerServiceImpl) UpdateServer(req *ServerUpdateRequest) (*Server, *http.Response, error) {
-	path := fmt.Sprintf("/server/%v", req.ServerIP)
+// Update server name for a specific server
+// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number
+func (s *ServerServiceImpl) Update(req *UpdateServerRequest) (*Server, *http.Response, error) {
+	path := fmt.Sprintf("/server/%s", req.ServerNumber)
 
-	type Data struct {
-		Server *Server `json:"server"`
-	}
-	data := Data{}
-	resp, err := s.client.Call(http.MethodPost, path, req, &data, true)
+	data := dataServer{}
+	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.Server, resp, err
 }
 
-func (s *ServerServiceImpl) GetCancellation(serverIP string) (*Cancellation, *http.Response, error) {
-	path := fmt.Sprintf("/server/%v/cancellation", serverIP)
+// GetCancellation Query cancellation data for a server
+// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number-cancellation
+func (s *ServerServiceImpl) GetCancellation(ServerNumber string) (*Cancellation, *http.Response, error) {
+	path := fmt.Sprintf("/server/%s/cancellation", ServerNumber)
 
-	type Data struct {
-		Cancellation *Cancellation `json:"cancellation"`
-	}
-	data := Data{}
-	resp, err := s.client.Call(http.MethodGet, path, nil, &data, true)
+	data := dataCancellation{}
+	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Cancellation, resp, err
 }
 
+// CancelServer Cancel a server
+// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number-cancellation
 func (s *ServerServiceImpl) CancelServer(req *CancelServerRequest) (*Cancellation, *http.Response, error) {
-	path := fmt.Sprintf("/server/%v/cancellation", req.ServerIP)
+	path := fmt.Sprintf("/server/%s/cancellation", req.ServerNumber)
 
-	type Data struct {
-		Cancellation *Cancellation `json:"cancellation"`
-	}
-	data := Data{}
-	resp, err := s.client.Call(http.MethodPost, path, req, &data, true)
+	data := dataCancellation{}
+	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.Cancellation, resp, err
 }
 
-func (s *ServerServiceImpl) WithdrawCancellation(serverIP string) (*http.Response, error) {
-	path := fmt.Sprintf("/server/%v/cancellation", serverIP)
+// WithdrawCancellation Withdraw a server cancellation
+// See: https://robot.your-server.de/doc/webservice/en.html#delete-server-server-number-cancellation
+func (s *ServerServiceImpl) WithdrawCancellation(ServerNumber string) (*http.Response, error) {
+	path := fmt.Sprintf("/server/%s/cancellation", ServerNumber)
 
-	return s.client.Call(http.MethodDelete, path, nil, nil, true)
+	return s.client.Call(http.MethodDelete, path, nil, nil)
+}
+
+// WithdrawOrder Withdraw a server order
+// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number-reversal
+func (s *ServerServiceImpl) WithdrawOrder(req *WithdrawOrderRequest) (*Cancellation, *http.Response, error) {
+	path := fmt.Sprintf("/server/%s/reversal", req.ServerNumber)
+
+	data := dataCancellation{}
+	resp, err := s.client.Call(http.MethodPost, path, req, &data)
+	return data.Cancellation, resp, err
 }

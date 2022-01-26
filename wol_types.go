@@ -1,6 +1,11 @@
 package hetzner
 
 type WOL struct {
-	ServerIP     string `json:"server_ip"`
-	ServerNumber int    `json:"server_number"`
+	ServerIp      string `json:"server_ip"`
+	ServerIpv6Net string `json:"server_ipv6_net"`
+	ServerNumber  int    `json:"server_number"`
+}
+
+type dataWol struct {
+	WOL *WOL `json:"wol"`
 }

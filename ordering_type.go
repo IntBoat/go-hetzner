@@ -5,84 +5,61 @@ import (
 )
 
 type MarketProduct struct {
-	ID              int      `json:"id"`
-	Name            string   `json:"name"`
-	Description     []string `json:"description"`
-	Traffic         string   `json:"traffic"`
-	Dist            []string `json:"dist"`
-	Arch            []int    `json:"arch"`
-	Lang            []string `json:"lang"`
-	Cpu             string   `json:"cpu"`
-	CpuBenchmark    int      `json:"cpu_benchmark"`
-	MemorySize      int      `json:"memory_size"`
-	HddSize         int      `json:"hdd_size"`
-	HddText         string   `json:"hdd_text"`
-	HddCount        int      `json:"hdd_count"`
-	Datacenter      string   `json:"datacenter"`
-	NetworkSpeed    string   `json:"network_speed"`
-	Price           float64  `json:"price,string"`
-	PriceSetup      float64  `json:"price_setup,string"`
-	PriceVat        float64  `json:"price_vat,string"`
-	PriceSetupVat   float64  `json:"price_setup_vat,string"`
-	FixedPrice      bool     `json:"fixed_price"`
-	NextReduce      int      `json:"next_reduce"`
-	NextReduceDate  JSONTime `json:"next_reduce_date"`
-	OrderableAddons []struct {
-		Id     string `json:"id"`
-		Name   string `json:"name"`
-		Min    int    `json:"min"`
-		Max    int    `json:"max"`
-		Prices []struct {
-			Location string `json:"location"`
-			Price    struct {
-				Net   float64 `json:"net,string"`
-				Gross float64 `json:"gross,string"`
-			} `json:"price"`
-			PriceSetup struct {
-				Net   float64 `json:"net,string"`
-				Gross float64 `json:"gross,string"`
-			} `json:"price_setup"`
-		} `json:"prices"`
-	} `json:"orderable_addons"`
+	ID              int               `json:"id"`
+	Name            string            `json:"name"`
+	Description     []string          `json:"description"`
+	Traffic         string            `json:"traffic"`
+	Dist            []string          `json:"dist"`
+	Arch            []int             `json:"arch"`
+	Lang            []string          `json:"lang"`
+	Cpu             string            `json:"cpu"`
+	CpuBenchmark    int               `json:"cpu_benchmark"`
+	MemorySize      int               `json:"memory_size"`
+	HddSize         int               `json:"hdd_size"`
+	HddText         string            `json:"hdd_text"`
+	HddCount        int               `json:"hdd_count"`
+	Datacenter      string            `json:"datacenter"`
+	NetworkSpeed    string            `json:"network_speed"`
+	Price           float64           `json:"price,string"`
+	PriceSetup      float64           `json:"price_setup,string"`
+	PriceVat        float64           `json:"price_vat,string"`
+	PriceSetupVat   float64           `json:"price_setup_vat,string"`
+	FixedPrice      bool              `json:"fixed_price"`
+	NextReduce      int               `json:"next_reduce"`
+	NextReduceDate  JSONTime          `json:"next_reduce_date"`
+	OrderableAddons []orderableAddons `json:"orderable_addons"`
+}
+
+type orderableAddons struct {
+	Id     string     `json:"id"`
+	Name   string     `json:"name"`
+	Min    int        `json:"min"`
+	Max    int        `json:"max"`
+	Prices []priceRow `json:"prices"`
+}
+
+type priceRow struct {
+	Location   string `json:"location"`
+	Price      price  `json:"price"`
+	PriceSetup price  `json:"price_setup"`
+}
+
+type price struct {
+	Net   float64 `json:"net,string"`
+	Gross float64 `json:"gross,string"`
 }
 
 type Product struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description []string `json:"description"`
-	Traffic     string   `json:"traffic"`
-	Dist        []string `json:"dist"`
-	Arch        []int    `json:"arch"`
-	Lang        []string `json:"lang"`
-	Location    []string `json:"location"`
-	Prices      []struct {
-		Location string `json:"location"`
-		Price    struct {
-			Net   float64 `json:"net,string"`
-			Gross float64 `json:"gross,string"`
-		} `json:"price"`
-		PriceSetup struct {
-			Net   float64 `json:"net,string"`
-			Gross float64 `json:"gross,string"`
-		} `json:"price_setup"`
-	} `json:"prices"`
-	OrderableAddons []struct {
-		Id     string `json:"id"`
-		Name   string `json:"name"`
-		Min    int    `json:"min"`
-		Max    int    `json:"max"`
-		Prices []struct {
-			Location string `json:"location"`
-			Price    struct {
-				Net   float64 `json:"net,string"`
-				Gross float64 `json:"gross,string"`
-			} `json:"price"`
-			PriceSetup struct {
-				Net   float64 `json:"net,string"`
-				Gross float64 `json:"gross,string"`
-			} `json:"price_setup"`
-		} `json:"prices"`
-	} `json:"orderable_addons"`
+	ID              string            `json:"id"`
+	Name            string            `json:"name"`
+	Description     []string          `json:"description"`
+	Traffic         string            `json:"traffic"`
+	Dist            []string          `json:"dist"`
+	Arch            []int             `json:"arch"`
+	Lang            []string          `json:"lang"`
+	Location        []string          `json:"location"`
+	Prices          []priceRow        `json:"prices"`
+	OrderableAddons []orderableAddons `json:"orderable_addons"`
 }
 
 type AuthorizedKey struct {
@@ -140,6 +117,7 @@ type dataTransaction struct {
 type dataProduct struct {
 	Product *Product `json:"product"`
 }
+
 type dataMarketProduct struct {
 	Product *MarketProduct `json:"product"`
 }

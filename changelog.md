@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Fully Support /boot/ Api
-  - support for Rescue, Linux, Vnc, Windows, Plesk and cPanel boot.
+    - support for Rescue, Linux, Vnc, Windows, Plesk and cPanel boot.
 - Fully Support /order/server/ Api
 - Fully Support /order/server_market/ Api
 - Fully Support /ip/ Api
@@ -44,8 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Parial support of failover API
-  - it's possible to get list of failover ips
-  - it's possible to switch failover ip to another server
+    - it's possible to get list of failover ips
+    - it's possible to switch failover ip to another server
 
 ### Changed
 

@@ -5,7 +5,7 @@ import (
 )
 
 type MarketProduct struct {
-	ID              string   `json:"id"`
+	ID              int      `json:"id"`
 	Name            string   `json:"name"`
 	Description     []string `json:"description"`
 	Traffic         string   `json:"traffic"`

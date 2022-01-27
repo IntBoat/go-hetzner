@@ -75,43 +75,86 @@ type HostKey struct {
 	Size        int    `json:"size"`
 }
 
-type Transaction struct {
-	Id            string        `json:"id"`
-	Date          time.Time     `json:"date"`
-	Status        string        `json:"status"`
-	ServerNumber  interface{}   `json:"server_number"`
-	ServerIp      interface{}   `json:"server_ip"`
-	AuthorizedKey []interface{} `json:"authorized_key"`
-	HostKey       []interface{} `json:"host_key"`
-	Comment       interface{}   `json:"comment"`
-	Product       struct {
-		Id          string      `json:"id"`
-		Name        string      `json:"name"`
-		Description []string    `json:"description"`
-		Traffic     string      `json:"traffic"`
-		Dist        string      `json:"dist"`
-		Arch        string      `json:"arch"`
-		Lang        string      `json:"lang"`
-		Location    interface{} `json:"location"`
+type transactionMeta struct {
+	Id            string    `json:"id"`
+	Date          time.Time `json:"date"`
+	Status        string    `json:"status"`
+	ServerNumber  string    `json:"server_number"`
+	ServerIp      string    `json:"server_ip"`
+	AuthorizedKey []struct {
+		Key struct {
+			Name        string `json:"name"`
+			Fingerprint string `json:"fingerprint"`
+			Type        string `json:"type"`
+			Size        int    `json:"size"`
+		} `json:"key"`
+	} `json:"authorized_key"`
+	HostKey []string `json:"host_key"`
+	Comment string   `json:"comment"`
+	Addons  []string `json:"addons"`
+}
+
+type productMeta struct {
+	Name        string   `json:"name"`
+	Description []string `json:"description"`
+	Traffic     string   `json:"traffic"`
+	Dist        string   `json:"dist"`
+	Arch        string   `json:"arch"`
+	Lang        string   `json:"lang"`
+}
+
+type MarketTransaction struct {
+	transactionMeta
+	Product struct {
+		productMeta
+		Cpu          string `json:"cpu"`
+		CpuBenchmark int    `json:"cpu_benchmark"`
+		MemorySize   int    `json:"memory_size"`
+		HddSize      int    `json:"hdd_size"`
+		HddText      string `json:"hdd_text"`
+		HddCount     int    `json:"hdd_count"`
+		Datacenter   string `json:"datacenter"`
+		NetworkSpeed string `json:"network_speed"`
 	} `json:"product"`
-	Addons []string `json:"addons"`
+}
+
+type Transaction struct {
+	transactionMeta
+	Product struct {
+		Id string `json:"id"`
+		productMeta
+		Location interface{} `json:"location"`
+	} `json:"product"`
 }
 
 type CreateTransactionRequest struct {
-	ProductID     string   `url:"product_id"`
+	ProductID string `url:"product_id"` // Product ID
+	// One or more SSH key fingerprints (Optional, you can use either parameter "authorized_key" or parameter "password")
 	AuthorizedKey []string `url:"authorized_key,brackets"`
-	Password      string   `url:"password,omitempty"`
-	Location      string   `url:"location"`
-	Dist          string   `url:"dist,omitempty"`
-	Arch          int      `url:"arch,omitempty"`
-	Lang          string   `url:"lang,omitempty"`
-	Comment       string   `url:"comment,omitempty"`
-	Addon         []string `url:"addon,brackets"`
-	Test          bool     `url:"test"`
+	// Root password (Optional: you can use either parameter "authorized_key" or parameter "password")
+	Password string `url:"password,omitempty"`
+	// The desired location
+	Location string `url:"location"`
+	// Distribution name which should be preinstalled (optional)
+	Dist string `url:"dist,omitempty"`
+	// Architecture of preinstalled distribution (optional)
+	Arch int `url:"arch,omitempty"`
+	// Language of preinstalled distribution (optional)
+	Lang string `url:"lang,omitempty"`
+	// Order comment (optional); Please note that if a comment is supplied, the order will be processed manually.
+	Comment string `url:"comment,omitempty"`
+	// Array of addon IDs (optional)
+	Addon []string `url:"addon,brackets"`
+	// The order will not be processed if set to "true" (optional)
+	Test bool `url:"test"`
 }
 
 type dataTransaction struct {
 	Transaction *Transaction `json:"transaction"`
+}
+
+type dataMarketTransaction struct {
+	Transaction *MarketTransaction `json:"transaction"`
 }
 
 type dataProduct struct {

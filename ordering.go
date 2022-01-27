@@ -19,11 +19,11 @@ type OrderingService interface {
 	GetTransaction(id string) (*Transaction, *http.Response, error)
 
 	ListMarketProducts() ([]*MarketProduct, *http.Response, error)
-	GetMarketProduct(id string) (*Product, *http.Response, error)
+	GetMarketProduct(id string) (*MarketProduct, *http.Response, error)
 
-	ListMarketTransactions() ([]*Transaction, *http.Response, error)
-	CreateMarketTransaction(req *CreateTransactionRequest) (*Transaction, *http.Response, error)
-	GetMarketTransaction(id string) (*Transaction, *http.Response, error)
+	ListMarketTransactions() ([]*MarketTransaction, *http.Response, error)
+	CreateMarketTransaction(req *CreateTransactionRequest) (*MarketTransaction, *http.Response, error)
+	GetMarketTransaction(id string) (*MarketTransaction, *http.Response, error)
 }
 
 type OrderingServiceImpl struct {
@@ -109,23 +109,23 @@ func (s *OrderingServiceImpl) ListMarketProducts() ([]*MarketProduct, *http.Resp
 
 // GetMarketProduct Query a specific server market product
 // See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
-func (s *OrderingServiceImpl) GetMarketProduct(id string) (*Product, *http.Response, error) {
+func (s *OrderingServiceImpl) GetMarketProduct(id string) (*MarketProduct, *http.Response, error) {
 	path := fmt.Sprintf("/order/server_market/product/%s", id)
 
-	data := dataProduct{}
+	data := dataMarketProduct{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Product, resp, err
 }
 
 // ListMarketTransactions Overview of all server orders within the last 30 days
 // See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
-func (s *OrderingServiceImpl) ListMarketTransactions() ([]*Transaction, *http.Response, error) {
+func (s *OrderingServiceImpl) ListMarketTransactions() ([]*MarketTransaction, *http.Response, error) {
 	path := "/order/server_market/transaction"
 
-	data := make([]dataTransaction, 0)
+	data := make([]dataMarketTransaction, 0)
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 
-	a := make([]*Transaction, len(data))
+	a := make([]*MarketTransaction, len(data))
 	for i, d := range data {
 		a[i] = d.Transaction
 	}
@@ -136,21 +136,21 @@ func (s *OrderingServiceImpl) ListMarketTransactions() ([]*Transaction, *http.Re
 // 201 CREATED is returned.
 // See: https://robot.your-server.de/doc/webservice/en.html#post-order-server_market-transaction
 func (s *OrderingServiceImpl) CreateMarketTransaction(req *CreateTransactionRequest) (
-	*Transaction, *http.Response, error,
+	*MarketTransaction, *http.Response, error,
 ) {
 	path := "/order/server_market/transaction"
 
-	data := dataTransaction{}
+	data := dataMarketTransaction{}
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.Transaction, resp, err
 }
 
 // GetMarketTransaction Query a specific order transaction
 // See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-transaction-id
-func (s *OrderingServiceImpl) GetMarketTransaction(id string) (*Transaction, *http.Response, error) {
+func (s *OrderingServiceImpl) GetMarketTransaction(id string) (*MarketTransaction, *http.Response, error) {
 	path := fmt.Sprintf("/order/server_market/transaction/%s", id)
 
-	data := dataTransaction{}
+	data := dataMarketTransaction{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Transaction, resp, err
 }

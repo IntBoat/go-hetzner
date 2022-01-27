@@ -9,7 +9,7 @@ type Reset struct {
 }
 
 type ResetCreateRequest struct {
-	ServerNumber string
+	ServerNumber int
 	Type         string `url:"type"`
 }
 

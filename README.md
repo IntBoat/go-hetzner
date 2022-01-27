@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/gtrafimenkov/go-hetzner)](https://goreportcard.com/report/github.com/gtrafimenkov/go-hetzner)
+[![Go Report Card](https://goreportcard.com/badge/github.com/intboat/go-hetzner)](https://goreportcard.com/report/github.com/intboat/go-hetzner)
 
 # go-hetzner
 

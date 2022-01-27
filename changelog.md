@@ -27,4 +27,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - vServer is deprecated
 
-Project forked from [https://github.com/appscode/go-hetzner](https://github.com/appscode/go-hetzner)
+Project forked from [https://github.com/gtrafimenkov/go-hetzner](https://github.com/gtrafimenkov/go-hetzner)

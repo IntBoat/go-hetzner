@@ -1,75 +1,71 @@
 package hetzner
 
+type bootMeta struct {
+	ServerIP      string `json:"server_ip"`
+	ServerIpv6Net string `json:"server_ipv6_net"`
+	ServerNumber  int    `json:"server_number"`
+	Active        bool   `json:"active"`
+}
+
+// Rescue represents Rescue config
 type Rescue struct {
-	ServerIp      string           `json:"server_ip"`
-	ServerIpv6Net string           `json:"server_ipv6_net"`
-	ServerNumber  int              `json:"server_number"`
+	bootMeta
 	Os            []string         `json:"os"`
 	Arch          []int            `json:"arch"`
-	Active        bool             `json:"active"`
 	Password      *string          `json:"password"`
 	AuthorizedKey []*AuthorizedKey `json:"authorized_key"`
 	HostKey       []*HostKey       `json:"host_key"`
 }
 
+// Linux represents Linux boot config
 type Linux struct {
-	ServerIp      string           `json:"server_ip"`
-	ServerIpv6Net string           `json:"server_ipv6_net"`
-	ServerNumber  int              `json:"server_number"`
+	bootMeta
 	Dist          []string         `json:"dist"`
 	Arch          []int            `json:"arch"`
 	Lang          []string         `json:"lang"`
-	Active        bool             `json:"active"`
 	Password      *string          `json:"password"`
 	AuthorizedKey []*AuthorizedKey `json:"authorized_key"`
 	HostKey       []*HostKey       `json:"host_key"`
 }
 
+// Vnc represents Vnc boot config
 type Vnc struct {
-	ServerIp      string   `json:"server_ip"`
-	ServerIpv6Net string   `json:"server_ipv6_net"`
-	ServerNumber  int      `json:"server_number"`
-	Dist          []string `json:"dist"`
-	Arch          []int    `json:"arch"`
-	Lang          []string `json:"lang"`
-	Active        bool     `json:"active"`
-	Password      *string  `json:"password"`
+	bootMeta
+	Dist     []string `json:"dist"`
+	Arch     []int    `json:"arch"`
+	Lang     []string `json:"lang"`
+	Password *string  `json:"password"`
 }
 
+// Windows represents Windows boot config
 type Windows struct {
-	ServerIp      string   `json:"server_ip"`
-	ServerIpv6Net string   `json:"server_ipv6_net"`
-	ServerNumber  int      `json:"server_number"`
-	Dist          []string `json:"dist"`
-	Lang          []string `json:"lang"`
-	Active        bool     `json:"active"`
-	Password      *string  `json:"password"`
+	bootMeta
+	Dist     []string `json:"dist"`
+	Lang     []string `json:"lang"`
+	Password *string  `json:"password"`
 }
 
+// Plesk represents Plesk boot config
 type Plesk struct {
-	ServerIp      string   `json:"server_ip"`
-	ServerIpv6Net string   `json:"server_ipv6_net"`
-	ServerNumber  int      `json:"server_number"`
-	Dist          []string `json:"dist"`
-	Arch          []int    `json:"arch"`
-	Lang          []string `json:"lang"`
-	Active        bool     `json:"active"`
-	Password      *string  `json:"password"`
-	Hostname      *string  `json:"hostname"`
+	bootMeta
+	Dist     []string `json:"dist"`
+	Arch     []int    `json:"arch"`
+	Lang     []string `json:"lang"`
+	Password *string  `json:"password"`
+	Hostname *string  `json:"hostname"`
 }
 
+// Cpanel represents Cpanel boot config
 type Cpanel struct {
-	ServerIp      string   `json:"server_ip"`
-	ServerIpv6Net string   `json:"server_ipv6_net"`
-	ServerNumber  int      `json:"server_number"`
-	Dist          []string `json:"dist"`
-	Arch          []int    `json:"arch"`
-	Lang          []string `json:"lang"`
-	Active        bool     `json:"active"`
-	Password      *string  `json:"password"`
-	Hostname      *string  `json:"hostname"`
+	bootMeta
+	Dist     []string `json:"dist"`
+	Arch     []int    `json:"arch"`
+	Lang     []string `json:"lang"`
+	Password *string  `json:"password"`
+	Hostname *string  `json:"hostname"`
 }
 
+// Boot represents ALL boot config
 type Boot struct {
 	Rescue  *Rescue  `json:"rescue"`
 	Linux   *Linux   `json:"linux"`
@@ -79,39 +75,45 @@ type Boot struct {
 	Cpanel  *Cpanel  `json:"cpanel"`
 }
 
-type ActiveMeta struct {
-	ServerNumber string // Server ID
+type requestMeta struct {
+	ServerNumber int    // Server ID
 	Dist         string `url:"dist"` // Distribution
 	Arch         int    `url:"arch"` // Architecture (optional, default: 64)
 	Lang         string `url:"lang"` // Language
 }
 
-type ActivateLinuxRequest struct {
-	ActiveMeta
-	AuthorizedKey *[]string `url:"authorized_key,brackets"` // One or more SSH key fingerprints (optional)
-}
-
+// ActivateRescueRequest represents ActivateRescue request parameter
 type ActivateRescueRequest struct {
-	ActiveMeta
+	requestMeta
 	AuthorizedKey *[]string `url:"authorized_key,brackets"` // One or more SSH key fingerprints (optional)
 }
 
+// ActivateLinuxRequest represents ActivateLinux request parameter
+type ActivateLinuxRequest struct {
+	requestMeta
+	AuthorizedKey *[]string `url:"authorized_key,brackets"` // One or more SSH key fingerprints (optional)
+}
+
+// ActivateVncRequest represents ActivateVnc request parameter
 type ActivateVncRequest struct {
-	ActiveMeta
+	requestMeta
 }
 
+// ActivateWindowsRequest represents ActivateWindows request parameter
 type ActivateWindowsRequest struct {
-	ActiveMeta
+	requestMeta
 }
 
+// ActivatePleskRequest represents ActivatePlesk request parameter
 type ActivatePleskRequest struct {
-	ActiveMeta
+	requestMeta
 	Hostname *string `url:"hostname"` // Hostname
 }
 
+// ActivateCPanelRequest represents ActivateCPanel request parameter
 type ActivateCPanelRequest struct {
-	ActiveMeta
-	hostname *string `url:"hostname"` // Hostname
+	requestMeta
+	Hostname *string `url:"hostname"` // Hostname
 }
 
 type dataLinux struct {

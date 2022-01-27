@@ -10,7 +10,7 @@ import (
 // ResetService represents a service to work with Reset ordering.
 type ResetService interface {
 	List() ([]*Reset, *http.Response, error)
-	Get(serverIP string) (*Reset, *http.Response, error)
+	Get(serverNumber int) (*Reset, *http.Response, error)
 	Reset(req *ResetCreateRequest) (*Reset, *http.Response, error)
 }
 
@@ -37,8 +37,8 @@ func (s *ResetServiceImpl) List() ([]*Reset, *http.Response, error) {
 
 // Get Query reset options for a specific server
 // See: https://robot.your-server.de/doc/webservice/en.html#get-reset-server-number
-func (s *ResetServiceImpl) Get(serverNumber string) (*Reset, *http.Response, error) {
-	path := fmt.Sprintf("/reset/%s", serverNumber)
+func (s *ResetServiceImpl) Get(serverNumber int) (*Reset, *http.Response, error) {
+	path := fmt.Sprintf("/reset/%d", serverNumber)
 
 	data := dataReset{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
@@ -48,7 +48,7 @@ func (s *ResetServiceImpl) Get(serverNumber string) (*Reset, *http.Response, err
 // Reset Execute reset on specific server
 // See: https://robot.your-server.de/doc/webservice/en.html#post-reset-server-number
 func (s *ResetServiceImpl) Reset(req *ResetCreateRequest) (*Reset, *http.Response, error) {
-	path := fmt.Sprintf("/reset/%s", req.ServerNumber)
+	path := fmt.Sprintf("/reset/%d", req.ServerNumber)
 
 	data := dataResetCreateResponse{}
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)

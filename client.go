@@ -91,25 +91,31 @@ func (c *Client) NewRequest(method, path string, request interface{}) (*http.Req
 	var u *url.URL
 	var err error
 
-	if c.BaseURL != "" {
-		u, err = url.Parse(c.BaseURL)
-		if err != nil {
-			return nil, err
-		}
+	if c.BaseURL == "" {
+		return nil, errors.New("baseURL must not be empty")
+	}
+
+	u, err = url.Parse(c.BaseURL)
+	if err != nil {
+		return nil, err
 	}
 
 	qv, err := query.Values(request)
 	if err != nil {
 		return nil, err
 	}
+
 	qs := encode(qv)
-	if qs != "" && method == http.MethodGet || method == http.MethodDelete {
-		if strings.Contains(path, "?") {
-			path += "&" + qs
-		} else {
-			path += "?" + qs
+	if qs != "" {
+		if method == http.MethodGet || method == http.MethodDelete {
+			if strings.Contains(path, "?") {
+				path += "&" + qs
+			} else {
+				path += "?" + qs
+			}
 		}
 	}
+
 	if path != "" {
 		rel, err := url.Parse(path)
 		if err != nil {
@@ -122,7 +128,7 @@ func (c *Client) NewRequest(method, path string, request interface{}) (*http.Req
 		}
 	}
 	if u == nil {
-		return nil, errors.New("No URL is provided.")
+		return nil, errors.New("no URL is provided")
 	}
 
 	req, err := http.NewRequest(method, u.String(), bytes.NewBufferString(qs))
@@ -159,18 +165,13 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 
 	resp, err = c.client.Do(req)
+	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	if c := resp.StatusCode; c == 500 || c >= 502 && c <= 599 {
-		// Avoid retry on 501: Not Implemented
-		err = &status5xx{}
-	}
 
-	if err != nil {
-		if _, ok := err.(*status5xx); !ok {
-			return nil, err
-		}
+	if c := resp.StatusCode; c == 500 || c >= 502 && c <= 599 {
+		return nil, errors.New("5xx Server Error")
 	}
 
 	if c.Debug {
@@ -180,38 +181,18 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		}
 	}
 
-	defer func() {
-		if rerr := resp.Body.Close(); err == nil {
-			err = rerr
-		}
-	}()
-
 	err = checkResponse(resp)
 	if err != nil {
 		return resp, err
 	}
 
 	if v != nil {
-		//bb, _ := ioutil.ReadAll(resp.Body)
-		//fmt.Println(string(bb))
-		//
-		//err := json.Unmarshal(bb, v)
-		//if err != nil {
-		//	return nil, err
-		//}
 		err = json.NewDecoder(resp.Body).Decode(v)
 		if err != nil {
 			return nil, err
 		}
 	}
 	return resp, err
-}
-
-type status5xx struct {
-}
-
-func (r *status5xx) Error() string {
-	return "5xx Server Error"
 }
 
 // CheckResponse checks the API response for errors, and returns them if present. A response is considered an
@@ -237,6 +218,7 @@ func checkResponse(r *http.Response) error {
 	return apiErr
 }
 
+// Call Send request to API
 func (c *Client) Call(method, path string, reqBody, resType interface{}) (*http.Response, error) {
 	req, err := c.NewRequest(method, path, reqBody)
 	if err != nil {
@@ -246,8 +228,8 @@ func (c *Client) Call(method, path string, reqBody, resType interface{}) (*http.
 }
 
 // Encode encodes the values into ``URL encoded'' form
-// ("bar=baz&foo=quux") sorted by key.
-// Unlike std lib, this avoid escaping keys.
+// ("bar=baz&foo=bar") sorted by key.
+// Unlike std lib, this avoids escaping keys.
 func encode(v url.Values) string {
 	if v == nil {
 		return ""

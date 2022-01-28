@@ -5,7 +5,7 @@ type IP struct {
 	IP              string `json:"ip"`
 	Locked          bool   `json:"locked"`
 	SeparateMac     string `json:"separate_mac"`
-	ServerIp        string `json:"server_ip"`
+	ServerIP        string `json:"server_ip"`
 	ServerNumber    int    `json:"server_number"`
 	TrafficDaily    int    `json:"traffic_daily"`
 	TrafficHourly   int    `json:"traffic_hourly"`
@@ -13,16 +13,16 @@ type IP struct {
 	TrafficWarnings bool   `json:"traffic_warnings"`
 }
 
-// IpSummary contains information about an IP with broadcast, gateway and mask information
-type IpSummary struct {
+// IPSummary contains information about an IP with broadcast, gateway and mask information
+type IPSummary struct {
 	IP
 	Broadcast string `json:"broadcast"`
 	Gateway   string `json:"gateway"`
 	Mask      int    `json:"mask"`
 }
 
-// IpUpdateRequest Requested information for IpService.UpdateWarring
-type IpUpdateRequest struct {
+// IPUpdateRequest Requested information for IpService.UpdateWarring
+type IPUpdateRequest struct {
 	IP              string
 	TrafficWarnings string `url:"traffic_warnings"` // Enable/disable traffic warnings (true, false)
 	TrafficHourly   string `url:"traffic_hourly"`   // Hourly traffic limit in MB
@@ -41,7 +41,7 @@ type dataIp struct {
 }
 
 type dataIpSummary struct {
-	IpSummary *IpSummary `json:"ip"`
+	IPSummary *IPSummary `json:"ip"`
 }
 
 type dataMac struct {

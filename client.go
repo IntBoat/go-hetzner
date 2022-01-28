@@ -47,7 +47,7 @@ type Client struct {
 	Server   ServerService
 	SSHKey   SSHKeyService
 	Failover FailoverService
-	IP       IpService
+	IP       IPService
 	Subnet   SubnetService
 	Wol      WOLService
 	Traffic  TrafficService
@@ -68,7 +68,7 @@ func NewClient(username, password string) *Client {
 	c.Server = &ServerServiceImpl{client: c}
 	c.SSHKey = &SSHKeyServiceImpl{client: c}
 	c.Failover = &FailoverServiceImpl{client: c}
-	c.IP = &IpServiceImpl{client: c}
+	c.IP = &IPServiceImpl{client: c}
 	c.Subnet = &SubnetServiceImpl{client: c}
 	c.Wol = &WOLServiceImpl{client: c}
 	c.Traffic = &TrafficServiceImpl{client: c}

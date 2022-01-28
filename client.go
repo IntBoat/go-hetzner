@@ -51,6 +51,7 @@ type Client struct {
 	Subnet   SubnetService
 	Wol      WOLService
 	Traffic  TrafficService
+	RDNS     RDNSService
 }
 
 func NewClient(username, password string) *Client {
@@ -72,6 +73,7 @@ func NewClient(username, password string) *Client {
 	c.Subnet = &SubnetServiceImpl{client: c}
 	c.Wol = &WOLServiceImpl{client: c}
 	c.Traffic = &TrafficServiceImpl{client: c}
+	c.RDNS = &RDNSServiceImpl{client: c}
 	return c
 }
 

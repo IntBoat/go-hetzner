@@ -8,7 +8,12 @@ import (
 
 // TrafficService represents a service to work with Traffic.
 type TrafficService interface {
+	// Get Query traffic data for multiple IPs or Subnet
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-traffic
 	Get(req TrafficRequest) (*Traffic, *http.Response, error)
+	// GetByGroup Query traffic data for multiple IPs or Subnet, traffic data is returned not as a sum over the whole
+	// interval but grouped by hour, day or month
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-traffic
 	GetByGroup(req TrafficRequest) (*TrafficGroup, *http.Response, error)
 }
 
@@ -18,8 +23,6 @@ type TrafficServiceImpl struct {
 
 var _ TrafficService = &TrafficServiceImpl{}
 
-// Get Query traffic data for multiple IPs or Subnet
-// See: https://robot.your-server.de/doc/webservice/en.html#post-traffic
 func (s *TrafficServiceImpl) Get(req TrafficRequest) (*Traffic, *http.Response, error) {
 	path := "/traffic"
 
@@ -30,9 +33,6 @@ func (s *TrafficServiceImpl) Get(req TrafficRequest) (*Traffic, *http.Response, 
 	return data.Traffic, resp, err
 }
 
-// GetByGroup Query traffic data for multiple IPs or Subnet, traffic data is returned not as a sum over the whole
-// interval but grouped by hour, day or month
-// See: https://robot.your-server.de/doc/webservice/en.html#post-traffic
 func (s *TrafficServiceImpl) GetByGroup(req TrafficRequest) (*TrafficGroup, *http.Response, error) {
 	path := "/traffic"
 

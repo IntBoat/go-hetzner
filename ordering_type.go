@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// MarketProduct contains information about auction server.
 type MarketProduct struct {
 	ID              int               `json:"id"`
 	Name            string            `json:"name"`
@@ -49,6 +50,7 @@ type price struct {
 	Gross float64 `json:"gross,string"`
 }
 
+// Product information about standard server product
 type Product struct {
 	ID              string            `json:"id"`
 	Name            string            `json:"name"`
@@ -62,6 +64,7 @@ type Product struct {
 	OrderableAddons []orderableAddons `json:"orderable_addons"`
 }
 
+// AuthorizedKey information about AuthorizedKey
 type AuthorizedKey struct {
 	Name        string `json:"name"`
 	Fingerprint string `json:"fingerprint"`
@@ -69,6 +72,7 @@ type AuthorizedKey struct {
 	Size        int    `json:"size"`
 }
 
+// HostKey information about HostKey
 type HostKey struct {
 	Fingerprint string `json:"fingerprint"`
 	Type        string `json:"type"`
@@ -103,6 +107,7 @@ type productMeta struct {
 	Lang        string   `json:"lang"`
 }
 
+// MarketTransaction contains information about auction server order transaction
 type MarketTransaction struct {
 	transactionMeta
 	Product struct {
@@ -118,6 +123,7 @@ type MarketTransaction struct {
 	} `json:"product"`
 }
 
+// Transaction contains information about standard server order transaction
 type Transaction struct {
 	transactionMeta
 	Product struct {
@@ -127,8 +133,10 @@ type Transaction struct {
 	} `json:"product"`
 }
 
+// CreateTransactionRequest Requested information for OrderingService.CreateMarketTransaction
 type CreateTransactionRequest struct {
-	ProductID string `url:"product_id"` // Product ID
+	// Product ID
+	ProductID string `url:"product_id"`
 	// One or more SSH key fingerprints (Optional, you can use either parameter "authorized_key" or parameter "password")
 	AuthorizedKey []string `url:"authorized_key,brackets"`
 	// Root password (Optional: you can use either parameter "authorized_key" or parameter "password")

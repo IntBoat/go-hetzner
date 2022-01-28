@@ -75,11 +75,13 @@ func NewClient(username, password string) *Client {
 	return c
 }
 
+// WithUserAgent Send this API client UserAgent to server
 func (c *Client) WithUserAgent(ua string) *Client {
 	c.UserAgent = ua
 	return c
 }
 
+// WithTimeout Set a custom timeout
 func (c *Client) WithTimeout(timeout time.Duration) *Client {
 	c.client.Timeout = timeout
 	return c

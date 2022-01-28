@@ -7,6 +7,7 @@ type serverMeta struct {
 	ServerName    string `json:"server_name"`
 }
 
+// ServerSummary contains information about server summary
 type ServerSummary struct {
 	serverMeta
 	Product   string   `json:"product"`
@@ -22,6 +23,7 @@ type ServerSummary struct {
 	} `json:"subnet"`
 }
 
+// Server contains information about server
 type Server struct {
 	ServerSummary
 	Reset            bool `json:"reset"`
@@ -35,11 +37,13 @@ type Server struct {
 	LinkedStoragebox int  `json:"linked_storagebox"`
 }
 
+// UpdateServerRequest Requested information for ServerService.Update
 type UpdateServerRequest struct {
 	ServerNumber int    // Server ID
 	ServerName   string `url:"server_name"` // Server name
 }
 
+// Cancellation contains information about cancellation server options
 type Cancellation struct {
 	serverMeta
 	EarliestCancellationDate JSONDate `json:"earliest_cancellation_date"`
@@ -50,6 +54,7 @@ type Cancellation struct {
 	CancellationReason       []string `json:"cancellation_reason"`
 }
 
+// CancellationSingle contains information about a cancelled server
 type CancellationSingle struct {
 	serverMeta
 	EarliestCancellationDate JSONDate `json:"earliest_cancellation_date"`
@@ -60,6 +65,7 @@ type CancellationSingle struct {
 	CancellationReason       string   `json:"cancellation_reason"`
 }
 
+// CancelServerRequest Requested information for ServerService.CancelServer
 type CancelServerRequest struct {
 	ServerNumber       int    // Server ID
 	CancellationDate   string `url:"cancellation_date"`             // Date to which the server should be cancelled
@@ -67,6 +73,7 @@ type CancelServerRequest struct {
 	ReserveLocation    bool   `url:"reserve_location"`              // Whether server location shall be reserved ('true' or 'false')
 }
 
+// WithdrawOrderRequest Requested information for ServerService.WithdrawCancellation
 type WithdrawOrderRequest struct {
 	ServerNumber   string // Server ID
 	ReversalReason string `url:"reversal_reason"` // Reason for withdrawal, optional

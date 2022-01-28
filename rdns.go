@@ -9,10 +9,23 @@ import (
 
 // RDNSService represents a service to work with Reverse DNS.
 type RDNSService interface {
+	// List Query all rDNS entries
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-rdns
 	List() ([]*RDNS, *http.Response, error)
+	// Get Query the current reverse DNS entry for one IP address
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-ip-ip
 	Get(ip string) (*RDNS, *http.Response, error)
+	// Create new reverse DNS entry for one IP address.
+	// Once the reverse DNS entry is successfully created, the status code 201 CREATED is returned.
+	// See: https://robot.your-server.de/doc/webservice/en.html#put-rdns-ip
 	Create(req *RDNSUpdateRequest) (*RDNS, *http.Response, error)
+	// Update create or Update a reverse DNS entry for one IP.
+	// Once the reverse DNS entry is successfully created, the status code is set to 201 created.
+	// On successful updates, the status code is 200 OK.
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-rdns-ip
 	Update(req *RDNSUpdateRequest) (*RDNS, *http.Response, error)
+	// Delete reverse DNS entry for one IP
+	// See: https://robot.your-server.de/doc/webservice/en.html#delete-rdns-ip
 	Delete(ip string) (*RDNS, *http.Response, error)
 }
 
@@ -22,8 +35,6 @@ type RDNSServiceImpl struct {
 
 var _ RDNSService = &RDNSServiceImpl{}
 
-// List Query all rDNS entries
-// See: https://robot.your-server.de/doc/webservice/en.html#get-rdns
 func (s *RDNSServiceImpl) List() ([]*RDNS, *http.Response, error) {
 	path := "/rdns"
 
@@ -37,8 +48,6 @@ func (s *RDNSServiceImpl) List() ([]*RDNS, *http.Response, error) {
 	return a, resp, err
 }
 
-// Get Query the current reverse DNS entry for one IP address
-// See: https://robot.your-server.de/doc/webservice/en.html#get-ip-ip
 func (s *RDNSServiceImpl) Get(ip string) (*RDNS, *http.Response, error) {
 	path := fmt.Sprintf("/rdns/%s", ip)
 
@@ -47,9 +56,6 @@ func (s *RDNSServiceImpl) Get(ip string) (*RDNS, *http.Response, error) {
 	return data.RDNS, resp, err
 }
 
-// Create new reverse DNS entry for one IP address.
-// Once the reverse DNS entry is successfully created, the status code 201 CREATED is returned.
-// See: https://robot.your-server.de/doc/webservice/en.html#put-rdns-ip
 func (s *RDNSServiceImpl) Create(req *RDNSUpdateRequest) (*RDNS, *http.Response, error) {
 	path := fmt.Sprintf("/rdns/%s", req.IP)
 
@@ -58,10 +64,6 @@ func (s *RDNSServiceImpl) Create(req *RDNSUpdateRequest) (*RDNS, *http.Response,
 	return data.RDNS, resp, err
 }
 
-// Update create or Update a reverse DNS entry for one IP.
-// Once the reverse DNS entry is successfully created, the status code is set to 201 created.
-// On successful updates, the status code is 200 OK.
-// See: https://robot.your-server.de/doc/webservice/en.html#post-rdns-ip
 func (s *RDNSServiceImpl) Update(req *RDNSUpdateRequest) (*RDNS, *http.Response, error) {
 	path := fmt.Sprintf("/rdns/%s", req.IP)
 
@@ -69,9 +71,6 @@ func (s *RDNSServiceImpl) Update(req *RDNSUpdateRequest) (*RDNS, *http.Response,
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.RDNS, resp, err
 }
-
-// Delete reverse DNS entry for one IP
-// See: https://robot.your-server.de/doc/webservice/en.html#delete-rdns-ip
 func (s *RDNSServiceImpl) Delete(ip string) (*RDNS, *http.Response, error) {
 	path := fmt.Sprintf("/rdns/%s", ip)
 

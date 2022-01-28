@@ -1,5 +1,6 @@
 package hetzner
 
+// Subnet contains information about a Subnet
 type Subnet struct {
 	IP              string `json:"ip"`
 	Mask            int    `json:"mask"`
@@ -14,6 +15,7 @@ type Subnet struct {
 	TrafficMonthly  int    `json:"traffic_monthly"`
 }
 
+// SubnetMac contains information about a Subnet Mac
 type SubnetMac struct {
 	IP          string              `json:"ip"`
 	Mask        int                 `json:"mask"`
@@ -21,6 +23,7 @@ type SubnetMac struct {
 	PossibleMac []map[string]string `json:"possible_mac"`
 }
 
+// SubnetUpdateRequest Requested information for SubnetService.UpdateWarring
 type SubnetUpdateRequest struct {
 	NetIP           string // Net IP
 	TrafficWarnings string `url:"traffic_warnings"` // Enable/disable traffic warnings (true, false)

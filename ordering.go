@@ -11,18 +11,39 @@ import (
 // To use the Robot webservice for ordering servers, please activate this function in your Robot administrative
 // interface first via "Administration; Settings; Web Service Settings; Ordering".
 type OrderingService interface {
+	// ListProducts Product overview of currently offered standard server products
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product
 	ListProducts() ([]*Product, *http.Response, error)
+	// GetProduct Query a specific server product
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product-product-id
 	GetProduct(id string) (*Product, *http.Response, error)
 
+	// ListTransactions Overview of all server orders within the last 30 days
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product-product-id
 	ListTransactions() ([]*Transaction, *http.Response, error)
+	// CreateTransaction Order a new server. If the order is successful, the status code 201 CREATED is returned.
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-order-server-transaction
 	CreateTransaction(req *CreateTransactionRequest) (*Transaction, *http.Response, error)
+	// GetTransaction Query a specific order transaction
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-transaction-id
 	GetTransaction(id string) (*Transaction, *http.Response, error)
 
+	// ListMarketProducts Product overview of currently offered server market products
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product
 	ListMarketProducts() ([]*MarketProduct, *http.Response, error)
+	// GetMarketProduct Query a specific server market product
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
 	GetMarketProduct(id string) (*MarketProduct, *http.Response, error)
 
+	// ListMarketTransactions Overview of all server orders within the last 30 days
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
 	ListMarketTransactions() ([]*MarketTransaction, *http.Response, error)
+	// CreateMarketTransaction Order a new server from the server market. If the order is successful, the status code
+	// 201 CREATED is returned.
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-order-server_market-transaction
 	CreateMarketTransaction(req *CreateTransactionRequest) (*MarketTransaction, *http.Response, error)
+	// GetMarketTransaction Query a specific order transaction
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-transaction-id
 	GetMarketTransaction(id string) (*MarketTransaction, *http.Response, error)
 }
 
@@ -32,8 +53,6 @@ type OrderingServiceImpl struct {
 
 var _ OrderingService = &OrderingServiceImpl{}
 
-// ListProducts Product overview of currently offered standard server products
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product
 func (s *OrderingServiceImpl) ListProducts() ([]*Product, *http.Response, error) {
 	path := "/order/server/product"
 
@@ -47,8 +66,6 @@ func (s *OrderingServiceImpl) ListProducts() ([]*Product, *http.Response, error)
 	return a, resp, err
 }
 
-// GetProduct Query a specific server product
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product-product-id
 func (s *OrderingServiceImpl) GetProduct(id string) (*Product, *http.Response, error) {
 	path := fmt.Sprintf("/order/server/product/%s", id)
 
@@ -57,8 +74,6 @@ func (s *OrderingServiceImpl) GetProduct(id string) (*Product, *http.Response, e
 	return data.Product, resp, err
 }
 
-// ListTransactions Overview of all server orders within the last 30 days
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-product-product-id
 func (s *OrderingServiceImpl) ListTransactions() ([]*Transaction, *http.Response, error) {
 	path := "/order/server/transaction"
 
@@ -72,8 +87,6 @@ func (s *OrderingServiceImpl) ListTransactions() ([]*Transaction, *http.Response
 	return a, resp, err
 }
 
-// CreateTransaction Order a new server. If the order is successful, the status code 201 CREATED is returned.
-// See: https://robot.your-server.de/doc/webservice/en.html#post-order-server-transaction
 func (s *OrderingServiceImpl) CreateTransaction(req *CreateTransactionRequest) (*Transaction, *http.Response, error) {
 	path := "/order/server/transaction"
 
@@ -82,8 +95,6 @@ func (s *OrderingServiceImpl) CreateTransaction(req *CreateTransactionRequest) (
 	return data.Transaction, resp, err
 }
 
-// GetTransaction Query a specific order transaction
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server-transaction-id
 func (s *OrderingServiceImpl) GetTransaction(id string) (*Transaction, *http.Response, error) {
 	path := fmt.Sprintf("/order/server/transaction/%v", id)
 
@@ -92,8 +103,6 @@ func (s *OrderingServiceImpl) GetTransaction(id string) (*Transaction, *http.Res
 	return data.Transaction, resp, err
 }
 
-// ListMarketProducts Product overview of currently offered server market products
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product
 func (s *OrderingServiceImpl) ListMarketProducts() ([]*MarketProduct, *http.Response, error) {
 	path := "/order/server_market/product"
 
@@ -107,8 +116,6 @@ func (s *OrderingServiceImpl) ListMarketProducts() ([]*MarketProduct, *http.Resp
 	return a, resp, err
 }
 
-// GetMarketProduct Query a specific server market product
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
 func (s *OrderingServiceImpl) GetMarketProduct(id string) (*MarketProduct, *http.Response, error) {
 	path := fmt.Sprintf("/order/server_market/product/%s", id)
 
@@ -117,8 +124,6 @@ func (s *OrderingServiceImpl) GetMarketProduct(id string) (*MarketProduct, *http
 	return data.Product, resp, err
 }
 
-// ListMarketTransactions Overview of all server orders within the last 30 days
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-product-product-id
 func (s *OrderingServiceImpl) ListMarketTransactions() ([]*MarketTransaction, *http.Response, error) {
 	path := "/order/server_market/transaction"
 
@@ -132,9 +137,6 @@ func (s *OrderingServiceImpl) ListMarketTransactions() ([]*MarketTransaction, *h
 	return a, resp, err
 }
 
-// CreateMarketTransaction Order a new server from the server market. If the order is successful, the status code
-// 201 CREATED is returned.
-// See: https://robot.your-server.de/doc/webservice/en.html#post-order-server_market-transaction
 func (s *OrderingServiceImpl) CreateMarketTransaction(req *CreateTransactionRequest) (
 	*MarketTransaction, *http.Response, error,
 ) {
@@ -145,8 +147,6 @@ func (s *OrderingServiceImpl) CreateMarketTransaction(req *CreateTransactionRequ
 	return data.Transaction, resp, err
 }
 
-// GetMarketTransaction Query a specific order transaction
-// See: https://robot.your-server.de/doc/webservice/en.html#get-order-server_market-transaction-id
 func (s *OrderingServiceImpl) GetMarketTransaction(id string) (*MarketTransaction, *http.Response, error) {
 	path := fmt.Sprintf("/order/server_market/transaction/%s", id)
 

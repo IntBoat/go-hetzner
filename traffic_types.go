@@ -1,5 +1,6 @@
 package hetzner
 
+// Traffic contains information about traffic data
 type Traffic struct {
 	Type string                    `json:"type"`
 	From string                    `json:"from"`
@@ -7,12 +8,14 @@ type Traffic struct {
 	Data map[string]TrafficDataRow `json:"data"`
 }
 
+// TrafficDataRow contains information about traffic data row
 type TrafficDataRow struct {
 	In  float64 `json:"in"`
 	Out float64 `json:"out"`
 	Sum float64 `json:"sum"`
 }
 
+// TrafficGroup contains information about traffic data
 type TrafficGroup struct {
 	Type string                               `json:"type"`
 	From string                               `json:"from"`
@@ -20,6 +23,7 @@ type TrafficGroup struct {
 	Data map[string]map[string]TrafficDataRow `json:"data"`
 }
 
+// TrafficRequest Requested information for TrafficService.Get and TrafficService.GetByGroup
 type TrafficRequest struct {
 	IP           []string `url:"ip,brackets"`     // One or more IP addresses
 	Subnet       []string `url:"subnet,brackets"` // One or more subnet addresses

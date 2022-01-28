@@ -9,8 +9,14 @@ import (
 
 // ResetService represents a service to work with Reset ordering.
 type ResetService interface {
+	// List Query reset options for all servers
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-reset
 	List() ([]*Reset, *http.Response, error)
+	// Get Query reset options for a specific server
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-reset-server-number
 	Get(serverNumber int) (*Reset, *http.Response, error)
+	// Reset Execute reset on specific server
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-reset-server-number
 	Reset(req *ResetCreateRequest) (*Reset, *http.Response, error)
 }
 
@@ -20,8 +26,6 @@ type ResetServiceImpl struct {
 
 var _ ResetService = &ResetServiceImpl{}
 
-// List Query reset options for all servers
-// See: https://robot.your-server.de/doc/webservice/en.html#get-reset
 func (s *ResetServiceImpl) List() ([]*Reset, *http.Response, error) {
 	path := "/reset"
 
@@ -35,8 +39,6 @@ func (s *ResetServiceImpl) List() ([]*Reset, *http.Response, error) {
 	return a, resp, err
 }
 
-// Get Query reset options for a specific server
-// See: https://robot.your-server.de/doc/webservice/en.html#get-reset-server-number
 func (s *ResetServiceImpl) Get(serverNumber int) (*Reset, *http.Response, error) {
 	path := fmt.Sprintf("/reset/%d", serverNumber)
 
@@ -45,8 +47,6 @@ func (s *ResetServiceImpl) Get(serverNumber int) (*Reset, *http.Response, error)
 	return data.Reset, resp, err
 }
 
-// Reset Execute reset on specific server
-// See: https://robot.your-server.de/doc/webservice/en.html#post-reset-server-number
 func (s *ResetServiceImpl) Reset(req *ResetCreateRequest) (*Reset, *http.Response, error) {
 	path := fmt.Sprintf("/reset/%d", req.ServerNumber)
 

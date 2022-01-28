@@ -9,12 +9,24 @@ import (
 
 // ServerService represents a service to work with server service.
 type ServerService interface {
+	// List Query data of all servers
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-server
 	List() ([]*ServerSummary, *http.Response, error)
+	// Get Query server data for a specific server
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number
 	Get(serverNumber int) (*Server, *http.Response, error)
+	// Update server name for a specific server
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number
 	Update(req *UpdateServerRequest) (*Server, *http.Response, error)
 
+	// GetCancellation Query cancellation data for a server
+	// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number-cancellation
 	GetCancellation(serverNumber int) (*Cancellation, *http.Response, error)
+	// CancelServer Cancel a server
+	// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number-cancellation
 	CancelServer(req *CancelServerRequest) (*CancellationSingle, *http.Response, error)
+	// WithdrawCancellation Withdraw a server cancellation
+	// See: https://robot.your-server.de/doc/webservice/en.html#delete-server-server-number-cancellation
 	WithdrawCancellation(serverNumber int) (*http.Response, error)
 }
 
@@ -24,8 +36,6 @@ type ServerServiceImpl struct {
 
 var _ ServerService = &ServerServiceImpl{}
 
-// List Query data of all servers
-// See: https://robot.your-server.de/doc/webservice/en.html#get-server
 func (s *ServerServiceImpl) List() ([]*ServerSummary, *http.Response, error) {
 	path := "/server"
 
@@ -39,8 +49,6 @@ func (s *ServerServiceImpl) List() ([]*ServerSummary, *http.Response, error) {
 	return a, resp, err
 }
 
-// Get Query server data for a specific server
-// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number
 func (s *ServerServiceImpl) Get(serverNumber int) (*Server, *http.Response, error) {
 	path := fmt.Sprintf("/server/%d", serverNumber)
 
@@ -49,8 +57,6 @@ func (s *ServerServiceImpl) Get(serverNumber int) (*Server, *http.Response, erro
 	return data.Server, resp, err
 }
 
-// Update server name for a specific server
-// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number
 func (s *ServerServiceImpl) Update(req *UpdateServerRequest) (*Server, *http.Response, error) {
 	path := fmt.Sprintf("/server/%d", req.ServerNumber)
 
@@ -59,8 +65,6 @@ func (s *ServerServiceImpl) Update(req *UpdateServerRequest) (*Server, *http.Res
 	return data.Server, resp, err
 }
 
-// GetCancellation Query cancellation data for a server
-// See: https://robot.your-server.de/doc/webservice/en.html#get-server-server-number-cancellation
 func (s *ServerServiceImpl) GetCancellation(serverNumber int) (*Cancellation, *http.Response, error) {
 	path := fmt.Sprintf("/server/%d/cancellation", serverNumber)
 
@@ -69,8 +73,6 @@ func (s *ServerServiceImpl) GetCancellation(serverNumber int) (*Cancellation, *h
 	return data.Cancellation, resp, err
 }
 
-// CancelServer Cancel a server
-// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number-cancellation
 func (s *ServerServiceImpl) CancelServer(req *CancelServerRequest) (*CancellationSingle, *http.Response, error) {
 	path := fmt.Sprintf("/server/%d/cancellation", req.ServerNumber)
 
@@ -79,16 +81,12 @@ func (s *ServerServiceImpl) CancelServer(req *CancelServerRequest) (*Cancellatio
 	return data.Cancellation, resp, err
 }
 
-// WithdrawCancellation Withdraw a server cancellation
-// See: https://robot.your-server.de/doc/webservice/en.html#delete-server-server-number-cancellation
 func (s *ServerServiceImpl) WithdrawCancellation(serverNumber int) (*http.Response, error) {
 	path := fmt.Sprintf("/server/%d/cancellation", serverNumber)
 
 	return s.client.Call(http.MethodDelete, path, nil, nil)
 }
 
-// WithdrawOrder Withdraw a server order
-// See: https://robot.your-server.de/doc/webservice/en.html#post-server-server-number-reversal
 func (s *ServerServiceImpl) WithdrawOrder(req *WithdrawOrderRequest) (*Cancellation, *http.Response, error) {
 	path := fmt.Sprintf("/server/%s/reversal", req.ServerNumber)
 

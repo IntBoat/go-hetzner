@@ -26,7 +26,7 @@ type RDNSService interface {
 	Update(req *RDNSUpdateRequest) (*RDNS, *http.Response, error)
 	// Delete reverse DNS entry for one IP
 	// See: https://robot.your-server.de/doc/webservice/en.html#delete-rdns-ip
-	Delete(ip string) (*RDNS, *http.Response, error)
+	Delete(ip string) (*http.Response, error)
 }
 
 type RDNSServiceImpl struct {
@@ -71,10 +71,9 @@ func (s *RDNSServiceImpl) Update(req *RDNSUpdateRequest) (*RDNS, *http.Response,
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.RDNS, resp, err
 }
-func (s *RDNSServiceImpl) Delete(ip string) (*RDNS, *http.Response, error) {
+func (s *RDNSServiceImpl) Delete(ip string) (*http.Response, error) {
 	path := fmt.Sprintf("/rdns/%s", ip)
 
-	data := dataRDNS{}
-	resp, err := s.client.Call(http.MethodDelete, path, nil, &data)
-	return data.RDNS, resp, err
+	resp, err := s.client.Call(http.MethodDelete, path, nil, nil)
+	return resp, err
 }

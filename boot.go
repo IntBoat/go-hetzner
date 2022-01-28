@@ -12,17 +12,17 @@ type BootService interface {
 	GetBoot(serverNumber int) (*Boot, *http.Response, error)
 
 	GetRescue(serverNumber int) (*Rescue, *http.Response, error)
-	ActivateRescue(req ActivateRescueRequest) (*Rescue, *http.Response, error)
+	ActivateRescue(req *ActivateRescueRequest) (*Rescue, *http.Response, error)
 	DeactivateRescue(serverNumber int) (*Rescue, *http.Response, error)
-
 	GetRescueLast(serverNumber int) (*Rescue, *http.Response, error)
+
 	GetLinux(serverNumber int) (*Linux, *http.Response, error)
 	ActivateLinux(req *ActivateLinuxRequest) (*Linux, *http.Response, error)
 	DeactivateLinux(serverNumber int) (*Linux, *http.Response, error)
 	GetLinuxLast(serverNumber int) (*Linux, *http.Response, error)
 
 	GetVnc(serverNumber int) (*Vnc, *http.Response, error)
-	ActivateVnc(req *ActivateLinuxRequest) (*Vnc, *http.Response, error)
+	ActivateVnc(req *ActivateVncRequest) (*Vnc, *http.Response, error)
 	DeactivateVnc(serverNumber int) (*Vnc, *http.Response, error)
 
 	GetWindows(serverNumber int) (*Windows, *http.Response, error)
@@ -30,7 +30,7 @@ type BootService interface {
 	DeactivateWindows(serverNumber int) (*Windows, *http.Response, error)
 
 	GetPlesk(serverNumber int) (*Plesk, *http.Response, error)
-	ActivatePlesk(req *ActivateWindowsRequest) (*Plesk, *http.Response, error)
+	ActivatePlesk(req *ActivatePleskRequest) (*Plesk, *http.Response, error)
 	DeactivatePlesk(serverNumber int) (*Plesk, *http.Response, error)
 
 	GetCPanel(serverNumber int) (*Cpanel, *http.Response, error)
@@ -55,10 +55,10 @@ func (s *BootServiceImpl) GetBoot(serverNumber int) (*Boot, *http.Response, erro
 	return data.Boot, resp, err
 }
 
-// GetRescue Query boot options for the Rescue System
+// GetRescue Query boot  for the Rescue System
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-rescue
 func (s *BootServiceImpl) GetRescue(serverNumber int) (*Rescue, *http.Response, error) {
-	path := fmt.Sprintf("/boot/%d", serverNumber)
+	path := fmt.Sprintf("/boot/%d/rescue", serverNumber)
 
 	data := dataRescue{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
@@ -67,7 +67,7 @@ func (s *BootServiceImpl) GetRescue(serverNumber int) (*Rescue, *http.Response, 
 
 // ActivateRescue Activate Rescue System
 // See: https://robot.your-server.de/doc/webservice/en.html#post-boot-server-number-rescue
-func (s *BootServiceImpl) ActivateRescue(req ActivateRescueRequest) (*Rescue, *http.Response, error) {
+func (s *BootServiceImpl) ActivateRescue(req *ActivateRescueRequest) (*Rescue, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/rescue", req.ServerNumber)
 
 	data := dataRescue{}
@@ -95,7 +95,7 @@ func (s *BootServiceImpl) GetRescueLast(serverNumber int) (*Rescue, *http.Respon
 	return data.Rescue, resp, err
 }
 
-// GetLinux Query boot options for the Linux installation
+// GetLinux Query boot  for the Linux installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-linux
 func (s *BootServiceImpl) GetLinux(serverNumber int) (*Linux, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/linux", serverNumber)
@@ -128,14 +128,14 @@ func (s *BootServiceImpl) DeactivateLinux(serverNumber int) (*Linux, *http.Respo
 // GetLinuxLast Show data of last Linux installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-linux-last
 func (s *BootServiceImpl) GetLinuxLast(serverNumber int) (*Linux, *http.Response, error) {
-	path := fmt.Sprintf("/boot/%d/linux", serverNumber)
+	path := fmt.Sprintf("/boot/%d/linux/last", serverNumber)
 
 	data := dataLinux{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Linux, resp, err
 }
 
-// GetVnc Query boot options for the VNC installation
+// GetVnc Query boot  for the VNC installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-vnc
 func (s *BootServiceImpl) GetVnc(serverNumber int) (*Vnc, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/vnc", serverNumber)
@@ -147,12 +147,9 @@ func (s *BootServiceImpl) GetVnc(serverNumber int) (*Vnc, *http.Response, error)
 
 // ActivateVnc Activate VNC installation
 // See: https://robot.your-server.de/doc/webservice/en.html#post-boot-server-number-vnc
-func (s *BootServiceImpl) ActivateVnc(req *ActivateLinuxRequest) (*Vnc, *http.Response, error) {
+func (s *BootServiceImpl) ActivateVnc(req *ActivateVncRequest) (*Vnc, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/vnc", req.ServerNumber)
 
-	type Data struct {
-		Vnc *Vnc `json:"vnc"`
-	}
 	data := dataVnc{}
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 	return data.Vnc, resp, err
@@ -168,7 +165,7 @@ func (s *BootServiceImpl) DeactivateVnc(serverNumber int) (*Vnc, *http.Response,
 	return data.Vnc, resp, err
 }
 
-// GetWindows Query boot options for the windows installation
+// GetWindows Query boot  for the windows installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-windows
 func (s *BootServiceImpl) GetWindows(serverNumber int) (*Windows, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/windows", serverNumber)
@@ -200,7 +197,7 @@ func (s *BootServiceImpl) DeactivateWindows(serverNumber int) (*Windows, *http.R
 	return data.Windows, resp, err
 }
 
-// GetPlesk Query boot options for the Plesk installation
+// GetPlesk Query boot  for the Plesk installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-windows
 func (s *BootServiceImpl) GetPlesk(serverNumber int) (*Plesk, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/plesk", serverNumber)
@@ -212,7 +209,7 @@ func (s *BootServiceImpl) GetPlesk(serverNumber int) (*Plesk, *http.Response, er
 
 // ActivatePlesk Activate Plesk installation
 // See: https://robot.your-server.de/doc/webservice/en.html#post-boot-server-number-plesk
-func (s *BootServiceImpl) ActivatePlesk(req *ActivateWindowsRequest) (*Plesk, *http.Response, error) {
+func (s *BootServiceImpl) ActivatePlesk(req *ActivatePleskRequest) (*Plesk, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/plesk", req.ServerNumber)
 
 	data := dataPlesk{}
@@ -230,7 +227,7 @@ func (s *BootServiceImpl) DeactivatePlesk(serverNumber int) (*Plesk, *http.Respo
 	return data.Plesk, resp, err
 }
 
-// GetCPanel Query boot options for the cPanel installation
+// GetCPanel Query boot  for the cPanel installation
 // See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-ip-cpanel
 func (s *BootServiceImpl) GetCPanel(serverNumber int) (*Cpanel, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/cpanel", serverNumber)

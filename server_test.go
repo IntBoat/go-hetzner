@@ -1,23 +1,12 @@
 package hetzner
 
-import (
-	"os"
-	"testing"
-)
-
-var client *Client
-var testingServer *ServerSummary
-
-func TestMain(m *testing.M) {
-	client = NewClient(os.Getenv("username"), os.Getenv("password"))
-	code := m.Run()
-	os.Exit(code)
-}
+import "testing"
 
 func TestList(t *testing.T) {
 	servers, _, err := client.Server.List()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	if len(servers) == 0 {
@@ -32,6 +21,7 @@ func TestGet(t *testing.T) {
 	server, _, err := client.Server.Get(testingServer.ServerNumber)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	if server.ServerNumber != testingServer.ServerNumber {
@@ -50,6 +40,7 @@ func TestUpdate(t *testing.T) {
 	)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	if server.ServerName != testingServer.ServerName+"_TEST" {
@@ -65,6 +56,7 @@ func TestUpdate(t *testing.T) {
 	)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	t.Logf("ServerName: %+v\n", server.ServerName)
@@ -74,6 +66,7 @@ func TestGetCancellation(t *testing.T) {
 	server, _, err := client.Server.GetCancellation(testingServer.ServerNumber)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	t.Logf("EarliestCancellationDate: %+v\n", server.EarliestCancellationDate)
@@ -90,6 +83,7 @@ func TestCancelServer(t *testing.T) {
 	)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	t.Logf("CancellationDate: %+v\n", server.CancellationDate)
 }
@@ -98,6 +92,7 @@ func TestWithdrawCancellation(t *testing.T) {
 	server, err := client.Server.WithdrawCancellation(testingServer.ServerNumber)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	t.Logf("StatusCode: %+v\n", server.StatusCode)
@@ -107,6 +102,7 @@ func TestGetCancellationAgain(t *testing.T) {
 	server, _, err := client.Server.GetCancellation(testingServer.ServerNumber)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	t.Logf("Cancelled: %+v\n", server.Cancelled)

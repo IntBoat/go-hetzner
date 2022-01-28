@@ -1,5 +1,6 @@
 package hetzner
 
+// Reset contains information about reset service
 type Reset struct {
 	ServerIP        string   `json:"server_ip"`
 	ServerIpv6Net   string   `json:"server_ipv6_net"`
@@ -8,12 +9,18 @@ type Reset struct {
 	OperatingStatus string   `json:"operating_status"`
 }
 
-type ResetCreateRequest struct {
+// ResetRequest requested information for ResetService.Reset
+type ResetRequest struct {
 	ServerNumber int
-	Type         string `url:"type"`
+	// Reset type
+	// Send CTRL+ALT+DEL to the server: sw
+	// Press hardware reset button: hw
+	// order a manual hardware reset: man
+	Type string `url:"type"`
 }
 
-type ResetCreateResponse struct {
+// ResetResponse contains information about current reset status
+type ResetResponse struct {
 	ServerIP      string `json:"server_ip"`
 	ServerIpv6Net string `json:"server_ipv6_net"`
 	ServerNumber  int    `json:"server_number"`
@@ -24,6 +31,6 @@ type dataReset struct {
 	Reset *Reset `json:"reset"`
 }
 
-type dataResetCreateResponse struct {
-	Reset *ResetCreateResponse `json:"reset"`
+type dataResetResponse struct {
+	Reset *ResetResponse `json:"reset"`
 }

@@ -17,7 +17,7 @@ type ResetService interface {
 	Get(serverNumber int) (*Reset, *http.Response, error)
 	// Reset Execute reset on specific server
 	// See: https://robot.your-server.de/doc/webservice/en.html#post-reset-server-number
-	Reset(req *ResetCreateRequest) (*Reset, *http.Response, error)
+	Reset(req *ResetRequest) (*ResetResponse, *http.Response, error)
 }
 
 type ResetServiceImpl struct {
@@ -47,16 +47,11 @@ func (s *ResetServiceImpl) Get(serverNumber int) (*Reset, *http.Response, error)
 	return data.Reset, resp, err
 }
 
-func (s *ResetServiceImpl) Reset(req *ResetCreateRequest) (*Reset, *http.Response, error) {
+func (s *ResetServiceImpl) Reset(req *ResetRequest) (*ResetResponse, *http.Response, error) {
 	path := fmt.Sprintf("/reset/%d", req.ServerNumber)
 
-	data := dataResetCreateResponse{}
+	data := dataResetResponse{}
 	resp, err := s.client.Call(http.MethodPost, path, req, &data)
 
-	out := &Reset{
-		ServerIP:     data.Reset.ServerIP,
-		ServerNumber: data.Reset.ServerNumber,
-		Type:         []string{data.Reset.Type},
-	}
-	return out, resp, err
+	return data.Reset, resp, err
 }

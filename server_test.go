@@ -2,7 +2,7 @@ package hetzner
 
 import "testing"
 
-func TestList(t *testing.T) {
+func TestServerList(t *testing.T) {
 	servers, _, err := client.Server.List()
 	if err != nil {
 		t.Error(err)
@@ -13,11 +13,9 @@ func TestList(t *testing.T) {
 		t.Fatal("no servers found")
 	}
 	t.Logf("Found %d Servers.\n", len(servers))
-
-	testingServer = servers[0]
 }
 
-func TestGet(t *testing.T) {
+func TestServerGet(t *testing.T) {
 	server, _, err := client.Server.Get(testingServer.ServerNumber)
 	if err != nil {
 		t.Error(err)
@@ -31,7 +29,7 @@ func TestGet(t *testing.T) {
 	t.Logf("ServerIP: %+v\n", server.ServerIP)
 }
 
-func TestUpdate(t *testing.T) {
+func TestServerUpdate(t *testing.T) {
 	server, _, err := client.Server.Update(
 		&UpdateServerRequest{
 			ServerNumber: testingServer.ServerNumber,

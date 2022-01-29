@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// No money to order Windows, cPanel and Plesk to test :(
+
 func TestGetBoot(t *testing.T) {
 	server, _, err := client.Boot.GetBoot(testingServer.ServerNumber)
 	if err != nil {

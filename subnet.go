@@ -67,7 +67,7 @@ func (s *SubnetServiceImpl) UpdateWarring(req *SubnetUpdateRequest) (*Subnet, *h
 }
 
 func (s *SubnetServiceImpl) GetMac(netIP string) (*SubnetMac, *http.Response, error) {
-	path := fmt.Sprintf("/subnet/%s", netIP)
+	path := fmt.Sprintf("/subnet/%s/mac", netIP)
 
 	data := dataSubnetMac{}
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
@@ -75,7 +75,7 @@ func (s *SubnetServiceImpl) GetMac(netIP string) (*SubnetMac, *http.Response, er
 }
 
 func (s *SubnetServiceImpl) CreateMac(netIP string) (*SubnetMac, *http.Response, error) {
-	path := fmt.Sprintf("/subnet/%s", netIP)
+	path := fmt.Sprintf("/subnet/%s/mac", netIP)
 
 	data := dataSubnetMac{}
 	resp, err := s.client.Call(http.MethodPut, path, nil, &data)

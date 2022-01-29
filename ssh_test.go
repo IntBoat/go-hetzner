@@ -2,7 +2,7 @@ package hetzner
 
 import "testing"
 
-func TestList(t *testing.T) {
+func TestSSHKeyList(t *testing.T) {
 	ssh, _, err := client.SSHKey.List()
 	if err != nil {
 		t.Error(err)
@@ -14,7 +14,7 @@ func TestList(t *testing.T) {
 
 var sshKeyFingerprint string
 
-func TestCreate(t *testing.T) {
+func TestSSHKeyCreate(t *testing.T) {
 	//goland:noinspection SpellCheckingInspection
 	ssh, _, err := client.SSHKey.Create(
 		&SSHKeyCreateRequest{
@@ -31,7 +31,7 @@ func TestCreate(t *testing.T) {
 	sshKeyFingerprint = ssh.Fingerprint
 }
 
-func TestGet(t *testing.T) {
+func TestSSHKeyGet(t *testing.T) {
 	ssh, _, err := client.SSHKey.Get(sshKeyFingerprint)
 	if err != nil {
 		t.Error(err)
@@ -41,7 +41,7 @@ func TestGet(t *testing.T) {
 	t.Logf("SSH: %s", ssh.Fingerprint)
 }
 
-func TestUpdate(t *testing.T) {
+func TestSSHKeyUpdate(t *testing.T) {
 	ssh, _, err := client.SSHKey.Update(
 		&SSHKeyUpdateRequest{
 			Fingerprint: sshKeyFingerprint,
@@ -56,7 +56,7 @@ func TestUpdate(t *testing.T) {
 	t.Logf("SSH: %s", ssh.Name)
 }
 
-func TestDelete(t *testing.T) {
+func TestSSHKeyDelete(t *testing.T) {
 	resp, err := client.SSHKey.Delete(sshKeyFingerprint)
 
 	if err != nil && resp.StatusCode != 200 {

@@ -87,7 +87,7 @@ func TestIPGetMac(t *testing.T) {
 		return
 	}
 
-	t.Logf("IP: %+v\n", IPs.Mac)
+	t.Logf("IP Mac: %+v\n", IPs.Mac)
 }
 
 func TestIPCreateMac(t *testing.T) {
@@ -97,7 +97,7 @@ func TestIPCreateMac(t *testing.T) {
 		return
 	}
 
-	t.Logf("IP: %+v\n", IPs.Mac)
+	t.Logf("IP Mac: %+v\n", IPs.Mac)
 }
 
 func TestIPDeleteMac(t *testing.T) {
@@ -107,5 +107,5 @@ func TestIPDeleteMac(t *testing.T) {
 		return
 	}
 
-	t.Logf("IP: %+v\n", IPs.Mac)
+	t.Logf("IP Mac: %+v\n", IPs.Mac)
 }

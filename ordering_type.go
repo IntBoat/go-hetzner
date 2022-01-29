@@ -32,7 +32,7 @@ type MarketProduct struct {
 }
 
 type orderableAddons struct {
-	Id     string     `json:"id"`
+	ID     string     `json:"id"`
 	Name   string     `json:"name"`
 	Min    int        `json:"min"`
 	Max    int        `json:"max"`
@@ -80,7 +80,7 @@ type HostKey struct {
 }
 
 type transactionMeta struct {
-	Id            string    `json:"id"`
+	ID            string    `json:"id"`
 	Date          time.Time `json:"date"`
 	Status        string    `json:"status"`
 	ServerNumber  string    `json:"server_number"`
@@ -127,7 +127,7 @@ type MarketTransaction struct {
 type Transaction struct {
 	transactionMeta
 	Product struct {
-		Id string `json:"id"`
+		ID string `json:"id"`
 		productMeta
 		Location interface{} `json:"location"`
 	} `json:"product"`

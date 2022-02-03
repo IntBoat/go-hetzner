@@ -16,7 +16,7 @@ func (t *JSONTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *JSONTime) UnmarshalJSON(data []byte) (err error) {
-	if bytes.Equal(data, []byte("null")) {
+	if bytes.Equal(data, []byte(`"null"`)) {
 		return nil
 	}
 
@@ -34,7 +34,7 @@ func (t *JSONDate) MarshalJSON() ([]byte, error) {
 }
 
 func (t *JSONDate) UnmarshalJSON(data []byte) (err error) {
-	if bytes.Equal(data, []byte("null")) {
+	if bytes.Equal(data, []byte(`"null"`)) {
 		return nil
 	}
 

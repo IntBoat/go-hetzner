@@ -27,7 +27,7 @@ type MarketProduct struct {
 	PriceSetupVat   float64           `json:"price_setup_vat,string"`
 	FixedPrice      bool              `json:"fixed_price"`
 	NextReduce      int               `json:"next_reduce"`
-	NextReduceDate  JSONTime          `json:"next_reduce_date"`
+	NextReduceDate  JSONTime          `json:"next_reduce_date,omitempty"`
 	OrderableAddons []orderableAddons `json:"orderable_addons"`
 }
 

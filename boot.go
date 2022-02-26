@@ -14,7 +14,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number
 	GetBoot(serverNumber int) (*Boot, *http.Response, error)
 
-	// GetRescue Query boot  for the Rescue System
+	// GetRescue Query boot for the Rescue System
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-rescue
 	GetRescue(serverNumber int) (*Rescue, *http.Response, error)
 	// ActivateRescue Activate Rescue System
@@ -27,7 +27,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-rescue-last
 	GetRescueLast(serverNumber int) (*Rescue, *http.Response, error)
 
-	// GetLinux Query boot  for the Linux installation
+	// GetLinux Query boot for the Linux installation
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-linux
 	GetLinux(serverNumber int) (*Linux, *http.Response, error)
 	// ActivateLinux Activate Linux installation
@@ -40,7 +40,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-linux-last
 	GetLinuxLast(serverNumber int) (*Linux, *http.Response, error)
 
-	// GetVnc Query boot  for the VNC installation
+	// GetVnc Query boot for the VNC installation
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-vnc
 	GetVnc(serverNumber int) (*Vnc, *http.Response, error)
 	// ActivateVnc Activate VNC installation
@@ -50,7 +50,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#delete-boot-server-number-vnc
 	DeactivateVnc(serverNumber int) (*Vnc, *http.Response, error)
 
-	// GetWindows Query boot  for the windows installation
+	// GetWindows Query boot for the windows installation
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-windows
 	GetWindows(serverNumber int) (*Windows, *http.Response, error)
 	// ActivateWindows Activate Windows installation.
@@ -62,7 +62,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#delete-boot-server-number-vnc
 	DeactivateWindows(serverNumber int) (*Windows, *http.Response, error)
 
-	// GetPlesk Query boot  for the Plesk installation
+	// GetPlesk Query boot for the Plesk installation
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-number-windows
 	GetPlesk(serverNumber int) (*Plesk, *http.Response, error)
 	// ActivatePlesk Activate Plesk installation
@@ -72,7 +72,7 @@ type BootService interface {
 	// See: https://robot.your-server.de/doc/webservice/en.html#delete-boot-server-number-plesk
 	DeactivatePlesk(serverNumber int) (*Plesk, *http.Response, error)
 
-	// GetCPanel Query boot  for the cPanel installation
+	// GetCPanel Query boot for the cPanel installation
 	// See: https://robot.your-server.de/doc/webservice/en.html#get-boot-server-ip-cpanel
 	GetCPanel(serverNumber int) (*Cpanel, *http.Response, error)
 	// ActivateCPanel Activate cPanel installation
@@ -136,6 +136,7 @@ func (s *BootServiceImpl) GetLinux(serverNumber int) (*Linux, *http.Response, er
 	resp, err := s.client.Call(http.MethodGet, path, nil, &data)
 	return data.Linux, resp, err
 }
+
 func (s *BootServiceImpl) ActivateLinux(req *ActivateLinuxRequest) (*Linux, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/linux", req.ServerNumber)
 
@@ -151,6 +152,7 @@ func (s *BootServiceImpl) DeactivateLinux(serverNumber int) (*Linux, *http.Respo
 	resp, err := s.client.Call(http.MethodDelete, path, nil, &data)
 	return data.Linux, resp, err
 }
+
 func (s *BootServiceImpl) GetLinuxLast(serverNumber int) (*Linux, *http.Response, error) {
 	path := fmt.Sprintf("/boot/%d/linux/last", serverNumber)
 

@@ -161,18 +161,15 @@ func (c *Client) NewRequest(method, path string, request interface{}) (*http.Req
 // Do send an API request and returns the API response. The API response is JSON decoded and stored in the value
 // pointed to by v, or returned as an error if an API error has occurred.
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
-	var resp *http.Response
-	var err error
-
 	if c.Debug {
 		fmt.Println(req.URL.String())
 	}
 
-	resp, err = c.client.Do(req)
-	defer resp.Body.Close()
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if c := resp.StatusCode; c == 500 || c >= 502 && c <= 599 {
 		return nil, errors.New("5xx Server Error")

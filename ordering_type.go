@@ -103,7 +103,7 @@ type productMeta struct {
 	Description []string `json:"description"`
 	Traffic     string   `json:"traffic"`
 	Dist        string   `json:"dist"`
-	Arch        string   `json:"arch"`
+	Arch        int      `json:"arch"`
 	Lang        string   `json:"lang"`
 }
 
